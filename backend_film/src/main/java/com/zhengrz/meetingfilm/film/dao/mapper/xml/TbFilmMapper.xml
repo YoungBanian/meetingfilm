@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhengrz.meetingfilm.film.dao.mapper.TbFilmMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhengrz.meetingfilm.film.dao.entity.TbFilm">
+        <id column="UUID" property="uuid" />
+        <result column="film_name" property="filmName" />
+        <result column="film_type" property="filmType" />
+        <result column="img_address" property="imgAddress" />
+        <result column="film_score" property="filmScore" />
+        <result column="film_preSaleNum" property="filmPresalenum" />
+        <result column="film_box_office" property="filmBoxOffice" />
+        <result column="film_source" property="filmSource" />
+        <result column="film_cats" property="filmCats" />
+        <result column="film_area" property="filmArea" />
+        <result column="film_date" property="filmDate" />
+        <result column="film_time" property="filmTime" />
+        <result column="film_status" property="filmStatus" />
+    </resultMap>
+
+    <select id="describeFilms" resultType="com.zhengrz.meetingfilm.film.controller.vo.DescribeFilmsRespVO">
+        SELECT
+         film.`UUID` AS  filmId,
+         film.`film_status` AS filmStatus,
+         info.`film_en_name` AS filmEnName,
+         film.`film_score` AS filmScore,
+         film.`film_name` AS filmName,
+         film.`film_preSaleNum` AS preSaleNum,
+         film.`film_box_office` AS boxOffice,
+         film.`film_time` AS filmTime,
+         info.`film_length` AS filmLength,
+         film.`img_address` AS mainImg
+        FROM tb_film film
+        LEFT JOIN tb_film_info info ON film.`UUID` = info.`film_id`
+    </select>
+
+    <select id="descrbeFilmById" resultType="com.zhengrz.meetingfilm.film.controller.vo.DescribeFilmRespVO">
+        SELECT
+         film.`UUID` AS filmId,
+         film.`film_name` AS filmName,
+         info.`film_length` AS filmLength,
+         (SELECT GROUP_CONCAT(show_name SEPARATOR ',') FROM tb_cat_dict cat WHERE FIND_IN_SET (
+            cat.`UUID`,(SELECT REPLACE(TRIM(BOTH '#' FROM film.film_cats),"#",",") FROM tb_film f WHERE f.uuid = film.`uuid`)
+         )) AS filmCats,
+         (SELECT GROUP_CONCAT(role_name SEPARATOR ',') FROM tb_film_actor actor WHERE actor.film_id = film.uuid) AS actors,
+         film.`img_address` AS imgAddress,
+         info.`film_imgs` AS subAddress
+        FROM tb_film film
+        LEFT JOIN tb_film_info info
+        ON film.`UUID` = info.`film_id`
+        where film.`uuid` = #{filmId}
+    </select>
+
+
+</mapper>

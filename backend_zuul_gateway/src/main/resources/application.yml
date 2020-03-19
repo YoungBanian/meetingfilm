@@ -1,0 +1,50 @@
+server:
+  port: 8080
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://zhengrz:zhengrz_2020@localhost:8761/eureka/
+
+zuul:
+  ribbon:
+    eager-load:
+      enabled: true
+  prefix: "/meetingfilm/"  ## 统一前缀
+  routes:
+    meetingfilm-user:
+      path: /u/**
+      serviceId: user-service
+      retryable: true   # 是否允许重试 ， 饿汉模式
+    meetingfilm-cinema:
+      path: /c/**
+      serviceId: cinema-service
+      retryable: true
+    meetingfilm-film:
+      path: /f/**
+      serviceId: film-service
+      retryable: true
+    meetingfilm-hall:
+      path: /h/**
+      serviceId: hall-service
+      retryable: true
+  sensitive-headers: Cookie,Set-Cookie
+
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 100000
+
+
+logging:
+  config: classpath:logback.xml
+spring:
+  application:
+    name: zuul-gateway
+

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhengrz.meetingfilm.film.dao.mapper.TbActorMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhengrz.meetingfilm.film.dao.entity.TbActor">
+        <id column="UUID" property="uuid" />
+        <result column="actor_name" property="actorName" />
+        <result column="actor_img" property="actorImg" />
+    </resultMap>
+
+    <select id="describeActors" resultType="com.zhengrz.meetingfilm.film.controller.vo.DescribeActorsRespVO">
+        select `uuid` AS actorId, actor_name AS actorName from tb_actor
+    </select>
+
+
+
+</mapper>
